@@ -10,4 +10,5 @@ class UI:
 3 - Show loans
 4 - New user
 5 - New game
-6 - New loan""")
+6 - New loan
+7 - Return game""")

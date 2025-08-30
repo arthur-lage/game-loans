@@ -32,6 +32,11 @@ class Database:
             self.cur.execute("INSERT INTO games (title, genre, year) VALUES ('Mortal Kombat 1', 'Fighting', 2024)")
             self.cur.execute("INSERT INTO games (title, genre, year) VALUES ('Dead By Daylight', 'Horror', 2016)")
             self.con.commit()
+
+            self.cur.execute("INSERT INTO loans (user_id, game_id, return_until) VALUES (1, 1, 10-25-2025)")
+            self.cur.execute("INSERT INTO loans (user_id, game_id, return_until) VALUES (1, 2, 11-21-2025)")
+            self.cur.execute("INSERT INTO loans (user_id, game_id, return_until) VALUES (2, 3, 12-10-2025)")
+            self.con.commit()
         except Exception as e:
             print("An error ocurred while filling mock data:" + repr(e))
 
@@ -71,6 +76,22 @@ class Database:
             self.con.commit()
         except Exception as e:
             print("Could not create loan: " + repr(e))
+
+    def find_loans_by_user_id(self, user_id) :
+        loans = self.cur.execute(queries["FindLoansByUserId"], (user_id,))
+        return loans.fetchall()
+
+    def find_active_loan_by_game_id_and_user_id(self, user_id, game_id):
+        loans = self.cur.execute(queries["FindActiveLoansByGameIdAndUserId"], (user_id, game_id))
+        return loans.fetchall()
+
+    def return_game(self, loan_id):
+        try:
+            self.cur.execute(queries["UpdateLoanReturnGame"], (loan_id,))
+            self.con.commit()
+        except Exception as e:
+            print("Could not update loan: " + repr(e))
+
 
     def close(self):
         self.cur.close()

@@ -84,7 +84,21 @@ def main ():
                 loans = db.find_loans_by_user_id(user_id)
                 
                 for loan in loans:
-                    print(loan["id"] + " - " + loan["Game Title"])
+                    print(f"{loan["id"]} - {loan["game_title"]}")
+
+                print("Choose game to be returned: ")
+                game_id = int(input("Game ID: "))
+
+                current_loan = db.find_active_loan_by_game_id_and_user_id(user_id, game_id)[0]
+                print(current_loan)
+
+                if not current_loan:
+                    print("No loans found for this game.")
+                    continue
+
+                if current_loan["is_returned"] == 0:
+                    db.return_game(current_loan["id"])
+
     db.close()
 
 if __name__ == "__main__":
